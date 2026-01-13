@@ -73,8 +73,7 @@ def generate_answer(query, products):
 
 
 st.set_page_config(page_title="Shopping Bot", page_icon="🛒")
-st.title("🛒 E-Commerce Intelligence Bot")
-st.caption("Powered by Groq & Llama 3")
+st.title("E-Commerce Intelligence Bot")
 
 with st.sidebar:
     st.header("System Status")
