@@ -32,13 +32,21 @@ def load_data():
 def generate_answer(query, products):
     """
     Feeds the user's question + product data to the LLM.
+    Includes a SAFETY LIMIT to prevent crashing the API.
     """
 
     context_text = ""
+
+    MAX_CHARS = 15000
+
     for p in products:
-        context_text += (
-            f"---\nURL: {p.get('url', 'N/A')}\nINFO: {p.get('content', '')}\n"
+        product_info = (
+            f"---\nURL: {p.get('url', 'N/A')}\nINFO: {p.get('content', '')[:500]}\n"
         )
+        if len(context_text) + len(product_info) < MAX_CHARS:
+            context_text += product_info
+        else:
+            break
 
     system_prompt = f"""
     You are an expert E-commerce Shopping Assistant.
@@ -58,7 +66,7 @@ def generate_answer(query, products):
             {"role": "user", "content": query},
         ],
         model="llama-3.3-70b-versatile",
-        temperature=0.1,  # Keep it factual
+        temperature=0.1,
     )
 
     return completion.choices[0].message.content
